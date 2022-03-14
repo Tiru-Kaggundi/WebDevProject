@@ -19,12 +19,9 @@ DB_USERNAME = config['secrets']['DB_USERNAME']
 DB_PASSWORD = config['secrets']['DB_PASSWORD']
 PEPPER = config['secrets']['PEPPER']
 
-
 connection = sqlite3.connect(DB_NAME)
 cursor = connection.cursor()
-# You can store data on your server in whatever structure is most convenient,
-# either holding it in memory on your server or in a sqlite database.
-# You may use the sample structures below or create your own.
+
 chats = {}
 auth_tokens = {}
 users = {}
