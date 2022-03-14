@@ -107,9 +107,9 @@ def getChannels():
     if checkAuthkey(tiru_auth_key): 
         try:
             cursor.execute(query)
-            rv = cursor.fetchall()
+            rv = [item[0] for item in cursor.fetchall()]
             app.logger.info(rv)
-            return jsonify({'Channels':rv})
+            return jsonify({'channels':rv})
         except Exception as e:
             print(e)
             return {}, 404
