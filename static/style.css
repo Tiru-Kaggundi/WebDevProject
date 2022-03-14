@@ -2,17 +2,27 @@ body {
   margin: 0
 }
 
-.weblog {
+.main {
   display: flex;
   width: 960px;
   margin: auto;
   font-family: sans-serif;
 }
 
+.messages {
+  display: flex;
+  flex-direction: column;
+  margin:auto;
+}
+
 .title_bar {
   background-color: #CCFFEE
 }
 
+.signup {
+  width: 300 px;
+  margin: auto;
+}
 /* .posts {
   display: none;
 }
@@ -80,7 +90,7 @@ h1 {
 }
 
 button.form_button {
-  width: 100%;
+  width: 100 px;
   font-size: 18px;
   border: 2px solid #AADDCC;
   border-radius: 4px;

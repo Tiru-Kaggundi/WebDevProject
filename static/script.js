@@ -1,10 +1,12 @@
-
+//login module begins
 class SignupAndLogin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      display: true,
+      isLoggedIn: false,
+      username: ''
     };
+    console.log("Set state of logged in to false")
   }
 
   signup = () => {
@@ -27,7 +29,6 @@ class SignupAndLogin extends React.Component {
   login = () => {
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
-    this.setState({display: false});
 
     fetch("http://127.0.0.1:5000/api/login", {
       method: 'POST',
@@ -36,21 +37,23 @@ class SignupAndLogin extends React.Component {
     }).then((response) => {
       if (response.status == 200) {
         response.json().then((data) => {
-          window.localStorage.setItem("session_token", data.session_token);
-          document.getElementById("posts").setAttribute('style', 'display: block;');
-          document.getElementById("compose").setAttribute('style', 'display: block;');
+          window.localStorage.setItem("tiru_auth_key", data.tiru_auth_key);
+          this.setState({ isLoggedIn: true });
+          console.log("Changed state to logged in true")
         });
-        alert("Logged in as "+username);
+        alert("Logged in as " + username);
+        this.setState({ 'username': username })
       } else {
         alert("Incorrect username and password");
       }
     });
   }
 
-
-
   render() {
-    return (
+    const isLoggedIn = this.state.isLoggedIn;
+    const username = this.state.username;
+    if (!isLoggedIn) {
+          return (
       <div className="signup">
         <h1>Signup and Login</h1>
         <div className="signup_form">
@@ -67,11 +70,22 @@ class SignupAndLogin extends React.Component {
         </div>
       </div>
     );
+    } else {
+      return (
+        <h1> Welcome  {username} </h1>
+      )
+    }
   }
+}
+// Login module over
+
+//auth key checker function - will be needed everytime
+function checkAuthkey(tiru_auth_key) {
+  return true; //to be changed later to check from DB and get back 1 or 0
 }
 
 
-
+//compose post module
 class Compose extends React.Component {
   post() {
     const title = document.getElementById("compose_title").value;
@@ -153,60 +167,6 @@ Posts.propTypes = {
   posts: window.PropTypes.array
 }
 
-class Journal extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      posts: [],
-      username: null,
-      password: null,
-      session_token: null,
-    }
-  }
 
-  // usernameHandler = (username) => {
-  //   this.setState({ username: username });
-  // }
-  // passwordHandler = (password) => {
-  //   this.setState({ password: password });
-  // }
-
-  // loginHandler() {
-  //   // TODO: update this call by managing State
-  // }
-
-  // logoutHandler() {
-  //   // TODO: replace this call by managing State
-  // }
-
-  render() {
-    return (
-      <div>
-        <div>
-          <TitleBar/>
-        </div>
-        <div className="weblog">
-          <SignupAndLogin />
-          <Compose />
-          <Posts />
-        </div>
-      </div>
-    );
-  }
-}
-
-function TitleBar() {
-  return (
-    <div className="title_bar">
-      <h1>Belay Chat</h1>
-    </div>
-  );
-}
 
 // ========================================
-
-
-ReactDOM.render(
-  React.createElement(Journal),
-  document.getElementById('root')
-);

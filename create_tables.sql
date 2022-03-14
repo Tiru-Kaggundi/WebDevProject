@@ -4,38 +4,39 @@
 -- above link to convert replies into dict format rather than having a different table if it gets painful
 
 DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS chats;
-DROP TABLE IF EXISTS posts;
+DROP TABLE IF EXISTS channels;
+DROP TABLE IF EXISTS messages;
 DROP TABLE IF EXISTS replies;
 
 
-create table chats (
+create table channels (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   slug VARCHAR(30) NOT NULL,
   title VARCHAR(255) NOT NULL
 );
 
-create table posts (
+create table messages (
     id INTEGER PRIMARY KEY AUTOINCREMENT, 
     body TEXT,
     author VARCHAR(40),
-    chat_id INTEGER,
-    FOREIGN KEY(chat_id) REFERENCES chats(id), 
+    message_id INTEGER,
+    FOREIGN KEY(message_id) REFERENCES channels(id), 
     FOREIGN KEY(author) REFERENCES users(username)
 );
 
 create table replies (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  chat_id INTEGER,
+  message_id INTEGER,
   body TEXT,
   author VARCHAR(40),
   FOREIGN KEY(author) REFERENCES users(username),
-  FOREIGN KEY(chat_id) REFERENCES chats(id)
+  FOREIGN KEY(message_id) REFERENCES messages(id)
 );
 
 create table users (
   username VARCHAR(40) PRIMARY KEY,
-  password VARCHAR(60)
+  password VARCHAR(60),
+  auth_key VARCHAR(40)
 );
 
 PRAGMA foreign_keys = ON;

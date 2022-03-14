@@ -1,7 +1,7 @@
 # app for starter - main app file
 import string
-# import random
-# import logging
+import random
+import logging
 # import time
 # from datetime import datetime, timedelta
 from flask import Flask, render_template, request, make_response, url_for, redirect, jsonify
@@ -13,6 +13,7 @@ import configparser
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 DB_NAME = 'belayDB'
+# Think if you want to simplify the configparser - or remove it altogether
 config = configparser.ConfigParser()
 config.read('secrets.cfg')
 DB_USERNAME = config['secrets']['DB_USERNAME']
@@ -44,6 +45,7 @@ def signup():
 
     username = body['username']
     password = (body['password'] + PEPPER).encode('utf-8')
+    auth_key = generate_token()
     print(password)
 
     connection = sqlite3.connect(DB_NAME)
@@ -52,11 +54,11 @@ def signup():
     hashed = bcrypt.hashpw(password, bcrypt.gensalt())
     print(hashed)
 
-    query = "INSERT into users (username, password) VALUES (?, ?)"
+    query = "INSERT into users (username, password, auth_key) VALUES (?, ?, ?)"
 
     try:
         print("came into try")
-        cursor.execute(query, (username, hashed))
+        cursor.execute(query, (username, hashed, auth_key))
         connection.commit()
         print("about to return try")
         return {}
@@ -76,13 +78,15 @@ def login():
     password = (body['password'] + PEPPER).encode('utf-8')
     connection = sqlite3.connect(DB_NAME)
     cursor = connection.cursor()
-    query = "SELECT password FROM users WHERE username=?"
+    query = "SELECT password, auth_key FROM users WHERE username=?"
     try:
         cursor.execute(query, (username, ))
-        hashed = cursor.fetchone()[0]
+        rv = cursor.fetchone()
+        hashed = rv[0]
+        auth_key = rv[1]
         if bcrypt.checkpw(password, hashed):
             # Think about it later! Should i send a hashed thing or should i make another auth_key
-            return jsonify({'session_token':str(hashed)})
+            return jsonify({'tiru_auth_key':auth_key})
         return {}, 404
     except Exception as e:
         print(e)
@@ -90,10 +94,36 @@ def login():
     finally:
         cursor.close()
         connection.close()
-
 # Bcrypt based login singup ends
 
+# Get channels list
+@app.route('/api/getChannels', methods=['GET'])
+def getChannels():
+    app.logger.info("got into get Channels")
+    tiru_auth_key = request.headers.get('tiru_auth_key')
+    connection = sqlite3.connect(DB_NAME)
+    cursor = connection.cursor()
+    query = "SELECT title FROM Channels ORDER BY id"
+    if checkAuthkey(tiru_auth_key): 
+        try:
+            cursor.execute(query)
+            rv = cursor.fetchall()
+            app.logger.info(rv)
+            return jsonify({'Channels':rv})
+        except Exception as e:
+            print(e)
+            return {}, 404
+        finally:
+            cursor.close()
+            connection.close()
 
+
+def checkAuthkey(auth_key):
+    '''
+    checks if the auth key exists for some user in database
+    '''
+    # build this later
+    return 1
 
 
 def newChat(username):
