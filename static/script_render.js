@@ -3,14 +3,19 @@ class Belay extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      messages: '',
+      currentChannelID: '',
       replies: '',
       username: '',
       auth_key: '',
     }
   }
+    
+    handleCallbackChannelID = (currentChannelReceived) => {
+        this.setState({ currentChannelID: currentChannelReceived })
+    }
 
-  render() {
+    render() {
+        console.log("State inside main: ", this.state);
     return (
       <div>
         <div>
@@ -18,9 +23,9 @@ class Belay extends React.Component {
           <SignupAndLogin />
         </div>
         <div className="main">
-          <Channels /> 
+                <Channels currentChannelID = {this.handleCallbackChannelID}/> 
           <div className="messages">
-            <Posts />
+                    <Posts currentChannelID={this.state.currentChannelID} />
             <Compose />
           </div>  
         </div>

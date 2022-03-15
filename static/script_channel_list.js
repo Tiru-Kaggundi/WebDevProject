@@ -10,7 +10,8 @@ class Channels extends React.Component {
     getMessages(channel_id) {
         console.log("let's get the messages from database for channel id: ", channel_id);
         this.setState({ currentChannel: channel_id })
-        console.log("State: ", this.state)
+        this.props.currentChannelID(channel_id)
+        console.log("State: ", this.state) //it runs one behind as it prints first and sets state later?
         sendingMessage(channel_id);
     }
     

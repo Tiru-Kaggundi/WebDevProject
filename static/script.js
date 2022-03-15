@@ -124,49 +124,5 @@ class Compose extends React.Component {
   }
 }
 
-class Posts extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      posts: [],
-    }
-  }
-
-  refresh(){
-    const session_token = window.localStorage.getItem("journal_session_token");
-    fetch("http://127.0.0.1:5000/api/post", {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({session_token: session_token})
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      this.setState({posts: data});
-    });
-  }
-
-  render() {
-    const posts = this.state.posts.map((post) =>
-      <div key={post.id} id={"post_" + post.id}>
-        <h3>{post.title}</h3>
-        <div>{post.body}</div>
-      </div>
-    );
-
-    return (
-      <div className="posts" id="posts">
-        <h2>Posts</h2>
-        <button onClick={() => this.refresh()}>Refresh</button>
-        {posts}
-      </div>
-    );
-  }
-}
-
-Posts.propTypes = {
-  posts: window.PropTypes.array
-}
 
 
-
-// ========================================
