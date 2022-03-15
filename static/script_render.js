@@ -1,5 +1,5 @@
 
-class Journal extends React.Component {
+class Belay extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -39,6 +39,6 @@ function TitleBar() {
 }
 
 ReactDOM.render(
-  React.createElement(Journal),
+  React.createElement(Belay),
   document.getElementById('root')
 );

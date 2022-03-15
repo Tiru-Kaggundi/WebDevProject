@@ -103,11 +103,11 @@ def getChannels():
     tiru_auth_key = request.headers.get('tiru_auth_key')
     connection = sqlite3.connect(DB_NAME)
     cursor = connection.cursor()
-    query = "SELECT title FROM Channels ORDER BY id"
+    query = "SELECT id, title FROM Channels ORDER BY id"
     if checkAuthkey(tiru_auth_key): 
         try:
             cursor.execute(query)
-            rv = [item[0] for item in cursor.fetchall()]
+            rv = [item for item in cursor.fetchall()]
             app.logger.info(rv)
             return jsonify({'channels':rv})
         except Exception as e:
