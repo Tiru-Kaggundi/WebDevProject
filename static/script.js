@@ -42,7 +42,8 @@ class SignupAndLogin extends React.Component {
           console.log("Changed state to logged in true")
         });
         alert("Logged in as " + username);
-        this.setState({ 'username': username })
+        this.props.currentUser(username); //send the value up to the parent who called this function
+        this.setState({ 'username': username }) // sets the state to current username
       } else {
         alert("Incorrect username and password");
       }
@@ -84,45 +85,6 @@ function checkAuthkey(tiru_auth_key) {
   return true; //to be changed later to check from DB and get back 1 or 0
 }
 
+function getUserfromAuthkey(auth_key) {
 
-//compose post module
-class Compose extends React.Component {
-  post() {
-    const title = document.getElementById("compose_title").value;
-    const body = document.getElementById("compose_body").value;
-    const session_token = window.localStorage.getItem("journal_session_token");
-
-    fetch("http://127.0.0.1:5000/api/post", {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        session_token: session_token,
-        title: title,
-        body: body
-      })
-    }).then(() => {
-      document.getElementById("compose_title").value = "";
-      document.getElementById("compose_body").value = "";
-    });
-  }
-
-  render() {
-    return (
-      <div className="compose" id="compose">
-        <h2>Compose</h2>
-        <div className="post_form">
-          <label htmlFor="compose_title">Title</label>
-          <input id="compose_title"></input>
-          <label htmlFor="compose_body">Post</label>
-          <textarea id="compose_body"></textarea>
-          <button className="form_button" onClick={() => this.post()}>
-            Post
-          </button>
-        </div>
-      </div>
-    );
-  }
 }
-
-
-

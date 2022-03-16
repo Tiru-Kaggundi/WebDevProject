@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS channels;
 DROP TABLE IF EXISTS messages;
 DROP TABLE IF EXISTS replies;
+DROP TABLE IF EXISTS my_last_read;
 
 
 create table channels (
@@ -19,8 +20,8 @@ create table messages (
     id INTEGER PRIMARY KEY AUTOINCREMENT, 
     body TEXT,
     author VARCHAR(40),
-    message_id INTEGER,
-    FOREIGN KEY(message_id) REFERENCES channels(id), 
+    channel_id INTEGER,
+    FOREIGN KEY(channel_id) REFERENCES channels(id), 
     FOREIGN KEY(author) REFERENCES users(username)
 );
 
@@ -38,5 +39,15 @@ create table users (
   password VARCHAR(60),
   auth_key VARCHAR(40)
 );
+
+create table my_last_read(
+  user_id INTEGER PRIMARY KEY,
+  channel_id INTEGER,
+  message_id INTEGER, 
+  FOREIGN KEY(user_id) REFERENCES users(id)
+  FOREIGN KEY(channel_id) REFERENCES channels(id), 
+  FOREIGN KEY(message_id) REFERENCES messages(id)
+
+)
 
 PRAGMA foreign_keys = ON;

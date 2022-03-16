@@ -2,33 +2,44 @@
 class Belay extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
+    this.state = { // this state setting is working fine and the values are updating properly. Ready to pass down to children
       currentChannelID: '',
-      replies: '',
-      username: '',
-      auth_key: '',
+      currentUser: '',
+      tiru_auth_key: '',
     }
   }
+    
+    componentDidMount() {
+        console.log("Component mounted and the state is: ", this.state)
+    }
     
     handleCallbackChannelID = (currentChannelReceived) => {
         this.setState({ currentChannelID: currentChannelReceived })
     }
 
-    render() {
-        console.log("State inside main: ", this.state);
+    handleCallbackCurrentUser = (currentUser) => {
+        this.setState({ currentUser: currentUser })
+        this.setState({tiru_auth_key: window.localStorage.getItem("tiru_auth_key")}) //auth_key resides in localstorage upon login
+    }
+
+    render() { // remember that you can send who state from here to any child item rather than sending one or two e.g. this.state will send down channel_id, username and auth_key
+        console.log("State MAIN: ", this.state);
     return (
       <div>
-        <div>
+        <div className="titlebar">
           <TitleBar />
-          <SignupAndLogin />
+                <SignupAndLogin currentUser={this.handleCallbackCurrentUser}/> 
         </div>
-        <div className="main">
-                <Channels currentChannelID = {this.handleCallbackChannelID}/> 
-          <div className="messages">
-                    <Posts currentChannelID={this.state.currentChannelID} />
-            <Compose />
-          </div>  
-        </div>
+            <div className="main">
+                <div className="sidebar">
+                    <Channels currentChannelID={this.handleCallbackChannelID} />
+                    <CreateNewChannel/>
+                </div>
+                <div className="messages"> 
+                    <Posts currentChannelID={this.state.currentChannelID} /> 
+                    <Compose currentChannelID={this.state.currentChannelID}/>
+                </div>  
+            </div>
       </div>
     );
   }

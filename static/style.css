@@ -4,12 +4,18 @@ body {
 
 .main {
   display: flex;
-  width: 960px;
+  width: auto;
   margin: auto;
   font-family: sans-serif;
 }
 
 .messages {
+  display: flex;
+  flex-direction: column;
+  margin:auto;
+}
+
+.sidebar {
   display: flex;
   flex-direction: column;
   margin:auto;
@@ -97,20 +103,6 @@ button.form_button {
 }
 
 .posts button {
-  padding: 10px 14px 10px 14px;
-  margin: 6px 6px 6px 6px;
-  background-color: white;
-  border: 2px solid #AADDCC;
-  border-radius: 4px;
-  color: #AADDCC;
-  font-size: 18;
-}
-
-.logout_button {
-  float: right;
-}
-
-.logout_button button {
   padding: 10px 14px 10px 14px;
   margin: 6px 6px 6px 6px;
   background-color: white;

@@ -2,18 +2,10 @@
 class Channels extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {currentChannel: '',
+    this.state = {
       channelsList: [],
     }
   }
-    
-    getMessages(channel_id) {
-        console.log("let's get the messages from database for channel id: ", channel_id);
-        this.setState({ currentChannel: channel_id })
-        this.props.currentChannelID(channel_id)
-        console.log("State: ", this.state) //it runs one behind as it prints first and sets state later?
-        sendingMessage(channel_id);
-    }
     
   refresh(){
     const tiru_auth_key = window.localStorage.getItem("tiru_auth_key");
@@ -30,7 +22,7 @@ class Channels extends React.Component {
     
   render() {
         const channels = this.state.channelsList.map((channel) =>
-            <li key={channel[1]} onClick={() => this.getMessages(channel[0])}>{channel[1]}</li>); //send this directly later to pollMessages
+            <li key={channel[1]} onClick={() => this.props.currentChannelID(channel[0])}>{channel[1]}</li>); //this is sending the clicked channel value back to parent who calls this function
         console.log(channels);
     return (
         <div className="channelsList" id="channels">
@@ -39,5 +31,14 @@ class Channels extends React.Component {
         <button onClick={() => this.refresh()}>Refresh</button>
         </div>
     );
+    }
+}
+
+
+class CreateNewChannel extends React.Component { 
+    render() {
+        return (
+            <h3>Create New Channel</h3>
+        ); 
     }
 }
