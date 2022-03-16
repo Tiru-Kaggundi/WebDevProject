@@ -12,8 +12,8 @@ DROP TABLE IF EXISTS my_last_read;
 
 create table channels (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  slug VARCHAR(30) NOT NULL,
-  title VARCHAR(255) NOT NULL
+  slug VARCHAR(30),
+  title VARCHAR(255) NOT NULL UNIQUE
 );
 
 create table messages (
@@ -47,7 +47,6 @@ create table my_last_read(
   FOREIGN KEY(user_id) REFERENCES users(id)
   FOREIGN KEY(channel_id) REFERENCES channels(id), 
   FOREIGN KEY(message_id) REFERENCES messages(id)
-
-)
+);
 
 PRAGMA foreign_keys = ON;

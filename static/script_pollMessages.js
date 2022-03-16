@@ -60,15 +60,14 @@ class Posts extends React.Component {
 class Compose extends React.Component {
   post() {
       const body = document.getElementById("compose_body").value;
+      console.log("got this body of post: ", body);
       const session_token = window.localStorage.getItem("tiru_auth_key");
       const url = "http://127.0.0.1:5000/api/channel/" + this.props.currentChannelID;
 
     fetch(url, {
       method: 'POST',
       headers: {'Content-Type': 'application/json', 'tiru_auth_key': session_token},
-      body: JSON.stringify({
-          body: body,
-      })
+      body: JSON.stringify({body: body})
     }).then(() => {
       document.getElementById("compose_body").value = "";
     });

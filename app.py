@@ -117,6 +117,33 @@ def getChannels():
 
 
 
+# Create a new Channel from given channelName
+@app.route('/api/createChannel', methods=['POST'])
+def createChannel():
+    app.logger.info("came to create a newChannel")
+    tiru_auth_key = request.headers.get('tiru_auth_key')
+    slug = ''
+    title = request.headers.get('channelName')
+    connection = sqlite3.connect(DB_NAME)
+    cursor = connection.cursor()
+    query = "INSERT into channels (slug, title) VALUES (?, ?)"
+    try:
+        print("came into try: new channel")
+        cursor.execute(query, (slug, title,))
+        connection.commit()
+        rv = get_channelID_channelName(title)
+        return {'currentChannelID': rv}
+    except Exception as e:
+        print("entered exception")
+        print(e)
+        return {'currentChannelID': ''}, 302
+    finally:
+        cursor.close()
+        connection.close()
+
+
+
+
 # Get chats or messages from the given channel number which has been clicked
 
 @app.route('/api/channel/<int:channelID>', methods=['GET', 'POST'])
@@ -140,13 +167,16 @@ def getMessages(channelID):
             finally:
                 cursor.close()
                 connection.close()
+
     if request.method == 'POST':
         app.logger.info("got into to post the message")
         tiru_auth_key = request.headers.get('tiru_auth_key')
         author = get_author_from_auth_key(tiru_auth_key)
         channel_id = int(channelID)
         jsonRec = request.get_json()
+        app.logger.info("Json rec: ", jsonRec)
         body = jsonRec['body']
+        app.logger.info("Body received: ", body)
         connection = sqlite3.connect(DB_NAME)
         cursor = connection.cursor()
         query = "INSERT INTO messages (body, author, channel_id) VALUES(?, ?, ?)"
@@ -202,6 +232,25 @@ def get_author_from_auth_key(auth_key):
         cursor.close()
         connection.close()
     return author
+
+def get_channelID_channelName(title):
+    '''
+    Get the ID of the channel from the channelName
+    '''
+    connection = sqlite3.connect(DB_NAME)
+    cursor = connection.cursor()
+    query = "SELECT id FROM channels WHERE title=?"
+    try:
+        cursor.execute(query, (title, ))
+        rv = cursor.fetchone()
+        channelID = rv[0]
+    except Exception as e:
+        print(e)
+        return {}, 404
+    finally:
+        cursor.close()
+        connection.close()
+    return channelID
 
 
 # TODO: Include any other routes your app might send users to

@@ -35,10 +35,41 @@ class Channels extends React.Component {
 }
 
 
-class CreateNewChannel extends React.Component { 
+
+class CreateNewChannel extends React.Component {
+  constructor(props) {
+    super(props);
+      this.state = {
+          currentChannelID: '',
+      } 
+  }
+    createChannel() {
+      const channelName = document.getElementById("channelName").value;
+      const session_token = window.localStorage.getItem("tiru_auth_key");
+      const url = "http://127.0.0.1:5000/api/createChannel"
+      fetch(url, {
+          method: 'POST',
+          headers: {
+              'tiru_auth_key':session_token,
+              'Content-Type': 'application/json',
+              'channelName': channelName
+          }
+      })
+    .then((response) => response.json())
+          .then((data) => {
+              console.log("channel Created with ID: ", data.currentChannelID);
+              this.setState({ currentChannelID: data.currentChannelID });
+              document.getElementById("channelName").value = "";
+    });
+    }
     render() {
         return (
-            <h3>Create New Channel</h3>
-        ); 
-    }
+        <div className="newChannel" id="newChannel">
+            <textarea id="channelName"></textarea>
+            <button className="form_button" onClick={() => this.createChannel()}>
+                Create New Channel
+            </button>
+            </div>
+    );
+  } 
 }
