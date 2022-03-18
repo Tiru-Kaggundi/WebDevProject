@@ -30,7 +30,9 @@ class Posts extends React.Component {
   
   showReplies(messageID) {
     console.log("Show replies clicked to message ID", messageID);
-    
+    //send this messageId up to the script_render somehow. 
+    //it will flow down to reply class automatically for displaying
+
   }
 
     render() {
@@ -100,8 +102,8 @@ class Replies extends React.Component {
   constructor(props) {
     super(props);
       this.state = {
-        currentChannelID: '',
-        messageID:1, 
+        currentChannelID: this.props.currentChannelID,
+        messageID:this.props.messageID, 
         replies: []
       }
   }

@@ -197,11 +197,11 @@ def getMessages(channelID):
 # Get and post replies 
 
 @app.route('/api/channel/<int:channelID>/<int:messageID>', methods=['GET', 'POST'])
-def getReplies(messageID):
+def getReplies(channelID, messageID):
     if request.method == 'GET': 
         app.logger.info("got in to get replies for messageID", messageID)
         tiru_auth_key = request.headers.get('tiru_auth_key')
-        message_id = int(channelID)
+        message_id = int(messageID)
         connection = sqlite3.connect(DB_NAME)
         cursor = connection.cursor()
         query = "SELECT id, author, body FROM replies WHERE message_id=? ORDER BY id"
