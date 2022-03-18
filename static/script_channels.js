@@ -7,21 +7,14 @@ class Channels extends React.Component {
     }
   }
 
-  // componentDidMount() {
-  //   setInterval(() => {
-  //     const tiru_auth_key = window.localStorage.getItem("tiru_auth_key");
-  //     fetch("http://127.0.0.1:5000/api/getChannels", {
-  //       method: 'GET',
-  //       headers: { 'Content-Type': 'application/json', 'tiru_auth_key': tiru_auth_key }
-  //     })
-  //       .then((response) => response.json())
-  //       .then((data) => {
-  //         this.setState({ channelsList: data.channels });
-  //         console.log("array is:", this.state.channelsList);
-  //       });
-  //   }, 5000);
-  // }
-  
+  componentDidMount() {
+    this.timer = setInterval(() => this.refresh(), 1000);
+  }
+
+  componentWillUnmount() {
+    this.timer = null;
+    console.log("Channels list unmounting");
+  }
     
   refresh(){
     const tiru_auth_key = window.localStorage.getItem("tiru_auth_key");

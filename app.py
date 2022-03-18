@@ -26,7 +26,6 @@ chats = {}
 auth_tokens = {}
 users = {}
 
-
 def generate_token():
     return ''.join(random.choices(string.ascii_lowercase + string.digits,
                                   k=10))

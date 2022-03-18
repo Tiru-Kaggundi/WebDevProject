@@ -9,6 +9,15 @@ class Posts extends React.Component {
       }
   }
 
+  componentDidMount() {
+    this.timer = setInterval(() => this.refresh(), 1000);
+  }
+
+  componentWillUnmount() {
+    this.timer = null;
+    console.log("Posts unmounting");
+  }
+
     // convert this refresh in set internval using 5.state and lifecycle react tutorial
     refresh() {
       const session_token = window.localStorage.getItem("tiru_auth_key");
@@ -32,8 +41,8 @@ class Posts extends React.Component {
     history.pushState(null, null, url);
     const posts = this.state.posts.map((post) =>
       <div key={post[0]} id={"post_" + post[0]}>
-            <div key={"msg_+" + post[0]}>{post[2]}</div>
-        <div key={"author_+" + post[1]}>{post[1]}</div>
+            <div id="postbody" key={"msg_+" + post[0]}>{post[2]}</div>
+        <div id="postauthor" key={"author_+" + post[1]}>{"-" + post[1]}</div>
         <button key={"replies_to_" + post[0]} onClick={() => this.props.messageID(post[0])}>Replies: {post[3]}</button> 
         </div>
     );
@@ -41,13 +50,12 @@ class Posts extends React.Component {
     return ( 
       <div className="posts" id="posts">
         <h2>Posts</h2>
-        <button onClick={() => this.refresh()}>Refresh</button> 
         {posts}
       </div>
     );
   }
 }
-
+        //<button onClick={() => this.refresh()}>Refresh</button> 
 //compose your message module
 //auth_key goes in header which the server uses to figure out who is the user
 class Compose extends React.Component {
@@ -91,8 +99,13 @@ class Replies extends React.Component {
       }
   }
 
+  componentDidMount() {
+    this.timer = setInterval(() => this.refresh(), 1000);
+  }
+
   componentWillUnmount() {
     console.warn("Replies component is unmounting")
+    this.timer=null
   }
 
     // convert this refresh in set internval using 5.state and lifecycle react tutorial

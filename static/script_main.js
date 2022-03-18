@@ -13,7 +13,8 @@ class Belay extends React.Component {
       currentUser: '',
       tiru_auth_key: window.localStorage.getItem("tiru_auth_key"),
       messageID: '',
-      goBack:true
+      goBack: true,
+      showChannelPosts: false
     }
   }
     
@@ -37,7 +38,8 @@ class Belay extends React.Component {
   }
    
     handleCallbackChannelID = (currentChannelReceived) => {
-        this.setState({ currentChannelID: currentChannelReceived })
+      this.setState({ currentChannelID: currentChannelReceived });
+      this.setState({ showChannelPosts: true });
     }
   
     handleCallbackmessageID = (messageIDReceived) => {
@@ -69,10 +71,11 @@ class Belay extends React.Component {
             <Channels currentChannelID={this.handleCallbackChannelID} />
             <CreateNewChannel />
           </div>
-          <div className="messages">
-            <Posts currentChannelID={this.state.currentChannelID} messageID={this.handleCallbackmessageID} />
-            <Compose currentChannelID={this.state.currentChannelID} />
-          </div>
+          {this.state.showChannelPosts &&
+            <div className="messages">
+              <Posts currentChannelID={this.state.currentChannelID} messageID={this.handleCallbackmessageID} />
+              <Compose currentChannelID={this.state.currentChannelID} />
+            </div>}
           {!this.state.goBack &&
             <div className="replies">
               <Replies messageID={this.state.messageID} currentChannelID={this.state.currentChannelID} goBack={this.handleCallbackgoBack} />

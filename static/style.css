@@ -100,6 +100,17 @@ h1 {
   grid-column: 2;
 }
 
+#postbody {
+font-size: 22 px;
+}
+
+#postauthor {
+font-size: 10 px;
+font-style: italic;
+}
+
+
+
 .post_form label {
   grid-column: 1 / 2;
   margin-top: auto;
