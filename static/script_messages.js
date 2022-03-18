@@ -5,7 +5,6 @@ class Posts extends React.Component {
   constructor(props) {
     super(props);
       this.state = {
-          currentChannelID:'', //need to fix it, it's not getting updated, for now use props.currentchannelID
         posts: []
       }
   }
@@ -27,15 +26,10 @@ class Posts extends React.Component {
               this.setState({ posts: data.posts });
     });
     }
-  
-  showReplies(messageID) {
-    console.log("Show replies clicked to message ID", messageID);
-    //send this messageId up to the script_render somehow. 
-    //it will flow down to reply class automatically for displaying
 
-  }
-
-    render() {
+  render() {
+    const url = "http://127.0.0.1:5000/api/channel/" + this.props.currentChannelID;
+    history.pushState(null, null, url);
     const posts = this.state.posts.map((post) =>
       <div key={post[0]} id={"post_" + post[0]}>
             <div key={"msg_+" + post[0]}>{post[2]}</div>
@@ -43,10 +37,6 @@ class Posts extends React.Component {
         <button key={"replies_to_" + post[0]} onClick={() => this.props.messageID(post[0])}>Replies: {post[3]}</button> 
         </div>
     );
-      //the button click on reply sends the messageID to parent which calls the Post function
-      console.log("State: ", this.state)
-      console.log('props: ', this.props)
-    console.log("Got this channel id (from react component): ", this.state.currentChannelID);
 
     return ( 
       <div className="posts" id="posts">
@@ -57,11 +47,6 @@ class Posts extends React.Component {
     );
   }
 }
-
-// Posts.propTypes = {
-//   posts: window.PropTypes.array
-// }
-
 
 
 //compose your message module
@@ -103,10 +88,12 @@ class Replies extends React.Component {
   constructor(props) {
     super(props);
       this.state = {
-        currentChannelID: this.props.currentChannelID,
-        messageID:this.props.messageID, 
         replies: []
       }
+  }
+
+  componentWillUnmount() {
+    console.warn("Replies component is unmounting")
   }
 
     // convert this refresh in set internval using 5.state and lifecycle react tutorial
@@ -126,9 +113,15 @@ class Replies extends React.Component {
               console.log("Got this json from server (data): ", data);
             this.setState({ replies: data.replies });
     });
+    }
+  
+  goBack() {
+    console.log("design go back")
   }
 
-    render() {
+  render() {
+    const url = "http://127.0.0.1:5000/api/channel/" + this.props.currentChannelID + "/" + this.props.messageID;
+    history.pushState(null, null, url);  
     const replies = this.state.replies.map((reply) =>
       <div key={reply[0]} id={"reply_" + reply[0]}>
             <div key={"rep_+" + reply[0]}>{reply[2]}</div>
@@ -143,6 +136,7 @@ class Replies extends React.Component {
     return ( 
       <div className="replies" id="replies">
         <h2>Replies</h2>
+        <button onClick={() => this.props.goBack(true)}>Go Back</button> 
         <button onClick={() => this.refresh()}>Refresh</button> 
         {replies}
       </div>

@@ -1,3 +1,9 @@
+window.addEventListener("DOMContentLoaded", () =>
+  console.log("DOM content loaded even called"));
+window.addEventListener("load", () => console.log("load event called"));
+window.addEventListener("popstate", () =>
+  console.log("pop event called")
+);
 
 class Belay extends React.Component {
   constructor(props) {
@@ -6,7 +12,8 @@ class Belay extends React.Component {
       currentChannelID: '',
       currentUser: '',
       tiru_auth_key: window.localStorage.getItem("tiru_auth_key"),
-      messageID: ''
+      messageID: '',
+      goBack:false
     }
   }
     
@@ -40,12 +47,18 @@ class Belay extends React.Component {
     }
   
     handleCallbackmessageID = (messageIDReceived) => {
-        this.setState({ messageID: messageIDReceived })
+      this.setState({ messageID: messageIDReceived });
+      this.setState({ goBack: false });
     }
 
     handleCallbackCurrentUser = (currentUser) => {
         this.setState({ currentUser: currentUser })
     }
+  
+    handleCallbackgoBack = (goBackstatus) => {
+        this.setState({ goBack: goBackstatus })
+    }
+  
 
     render() { // remember that you can send who state from here to any child item rather than sending one or two e.g. this.state will send down channel_id, username and auth_key
         console.log("State MAIN: ", this.state);
@@ -66,10 +79,11 @@ class Belay extends React.Component {
             <Posts currentChannelID={this.state.currentChannelID} messageID={this.handleCallbackmessageID} />
             <Compose currentChannelID={this.state.currentChannelID} />
           </div>
-          <div className="replies">
-            <Replies messageID={this.state.messageID} currentChannelID={this.state.currentChannelID} />
-            <CreateReply messageID={this.state.messageID} currentChannelID={this.state.currentChannelID} />
-          </div>
+          {!this.state.goBack &&
+            <div className="replies">
+              <Replies messageID={this.state.messageID} currentChannelID={this.state.currentChannelID} goBack={this.handleCallbackgoBack} />
+              <CreateReply messageID={this.state.messageID} currentChannelID={this.state.currentChannelID} />
+            </div>}
         </div>}
       </div>
     );

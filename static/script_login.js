@@ -7,7 +7,6 @@ class SignupAndLogin extends React.Component {
       username: ''
     };
   }
-
   signup = () => {
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
@@ -73,4 +72,3 @@ class SignupAndLogin extends React.Component {
     );
   }
 }
-

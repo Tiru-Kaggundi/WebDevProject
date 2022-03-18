@@ -61,7 +61,7 @@ h1 {
   padding-bottom: 5px;
 }
 
-.login_form, .post_form {
+.login_form {
   width: 400px;
   border: 2px solid #AADDCC;
   border-radius: 4px;
@@ -70,6 +70,17 @@ h1 {
   grid-gap: 10px 10px;
   padding: 20px 40px 20px 40px;
 }
+
+.post_form {
+  width: 300px;
+  border: 2px solid #AADDCC;
+  border-radius: 4px;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-gap: auto;
+  padding: auto;
+}
+
 
 .login_form label {
   grid-column: 1 / 2;
@@ -103,7 +114,7 @@ h1 {
 }
 
 .post_form textarea {
-  height: 150px;
+  height: 80px;
   grid-column: 1 / 4;
   border: 2px solid #AADDCC;
   border-radius: 4px;
@@ -121,11 +132,8 @@ button.form_button {
 }
 
 .posts button {
-  padding: 10px 14px 10px 14px;
-  margin: 6px 6px 6px 6px;
-  background-color: white;
+  width: 100 px;
+  font-size: 12px;
   border: 2px solid #AADDCC;
   border-radius: 4px;
-  color: #AADDCC;
-  font-size: 18;
 }
