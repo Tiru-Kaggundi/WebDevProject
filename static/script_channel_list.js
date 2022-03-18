@@ -3,8 +3,7 @@ class Channels extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      channelsList: [],
-      lastReadList: []
+      channelsList: []
     }
   }
     
@@ -18,14 +17,12 @@ class Channels extends React.Component {
     .then((data) => {
         this.setState({ channelsList: data.channels });
       console.log("array is:", this.state.channelsList);
-      this.setState({ lastReadList: data.lastReadList });
-      console.log("last read list is:", this.state.lastReadList)
     });
   }
     
   render() {
         const channels = this.state.channelsList.map((channel) =>
-            <li key={channel[1]} onClick={() => this.props.currentChannelID(channel[0])}>{channel[1]}</li>); //this is sending the clicked channel value back to parent who calls this function
+            <button key={channel[1]} onClick={() => this.props.currentChannelID(channel[0])}>{channel[1] + " : " + channel[2] +" unread"}</button>); //this is sending the clicked channel value back to parent who calls this function
         console.log(channels);
     return (
         <div className="channelsList" id="channels">
@@ -37,7 +34,7 @@ class Channels extends React.Component {
     }
 }
 
-
+//+ channel[2] +"unread"
 
 class CreateNewChannel extends React.Component {
   constructor(props) {
