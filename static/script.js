@@ -6,7 +6,6 @@ class SignupAndLogin extends React.Component {
       isLoggedIn: false,
       username: ''
     };
-    console.log("Set state of logged in to false")
   }
 
   signup = () => {
@@ -43,7 +42,6 @@ class SignupAndLogin extends React.Component {
         });
         alert("Logged in as " + username);
         this.props.currentUser(username); //send the value up to the parent who called this function
-        this.setState({ 'username': username }) // sets the state to current username
       } else {
         alert("Incorrect username and password");
       }
@@ -51,10 +49,7 @@ class SignupAndLogin extends React.Component {
   }
 
   render() {
-    const isLoggedIn = this.state.isLoggedIn;
-    const username = this.state.username;
-    if (!isLoggedIn) {
-          return (
+    return (
       <div className="signup">
         <h1>Signup and Login</h1>
         <div className="signup_form">
@@ -62,29 +57,20 @@ class SignupAndLogin extends React.Component {
           <input id="username"></input>
           <label htmlFor="password">Password</label>
           <input id="password" type="password"></input>
-          <button className="form_button" onClick={this.signup}>
+          <div className="signup_buttons">
+            <div>
+            <button className="form_button" onClick={this.signup}>
             Signup
-          </button>
-          <button className="form_button" onClick={this.login}>
+              </button></div>
+            <div>
+              <button className="form_button" onClick={this.login}>
             Login
-          </button>
+          </button></div>
+          </div>
+
         </div>
       </div>
     );
-    } else {
-      return (
-        <h1> Welcome  {username} </h1>
-      )
-    }
   }
 }
-// Login module over
 
-//auth key checker function - will be needed everytime
-function checkAuthkey(tiru_auth_key) {
-  return true; //to be changed later to check from DB and get back 1 or 0
-}
-
-function getUserfromAuthkey(auth_key) {
-
-}

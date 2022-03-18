@@ -22,13 +22,31 @@ body {
 }
 
 .title_bar {
-  background-color: #CCFFEE
+  display:flex;
+  flex-direction:column;
+  justify-content: center;
+  align-items:center;
+  background-color: #CCFFEE;
 }
 
 .signup {
-  width: 300 px;
+  display: flex;
+  flex-direction:column;
+  width: 200 px;
   margin: auto;
+  justify-content: center;
+  align-items:center;
 }
+
+.signup_buttons {
+  display: flex;
+  flex-direction:row;
+  width: 200 px;
+  margin:auto;
+  justify-content:space-around;
+  align-items:center;
+}
+
 /* .posts {
   display: none;
 }

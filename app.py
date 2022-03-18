@@ -126,6 +126,14 @@ def getChannels():
             connection.close()
 
 
+# get username from auth_key to set state
+@app.route('/api/getUsername', methods=['GET'])
+def getUsername():
+    app.logger.info("got into get username")
+    tiru_auth_key = request.headers.get('tiru_auth_key')
+    username = get_author_from_auth_key(tiru_auth_key) 
+    return jsonify({'currentUser':username})
+
 
 # Create a new Channel from given channelName
 @app.route('/api/createChannel', methods=['POST'])

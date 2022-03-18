@@ -5,14 +5,35 @@ class Belay extends React.Component {
     this.state = { // this state setting is working fine and the values are updating properly. Ready to pass down to children
       currentChannelID: '',
       currentUser: '',
-      tiru_auth_key: '',
+      tiru_auth_key: window.localStorage.getItem("tiru_auth_key"),
       messageID: ''
     }
   }
     
-    componentDidMount() {
-        console.log("Component mounted and the state is: ", this.state)
+  componentDidMount() {
+    if (this.state.tiru_auth_key) {
+      console.log("User already logged in")
+      // get username and update state
+      fetch("http://127.0.0.1:5000/api/getUsername", {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json', 'tiru_auth_key': this.state.tiru_auth_key }
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          this.setState({ currentUser: data.currentUser });
+          console.log("got back username and updated state:", this.state.currentUser);
+        });
     }
+    else {
+      console.log("User not logged in")
+    }
+  }
+
+      // document.querySelector(".signup").style.display = "block";
+      // document.querySelector(".sidebar").style.display = "none";
+      // document.querySelector(".messages").style.display = "none";
+      // document.querySelector(".replies").style.display = "none";
+  
     
     handleCallbackChannelID = (currentChannelReceived) => {
         this.setState({ currentChannelID: currentChannelReceived })
@@ -24,7 +45,6 @@ class Belay extends React.Component {
 
     handleCallbackCurrentUser = (currentUser) => {
         this.setState({ currentUser: currentUser })
-        this.setState({tiru_auth_key: window.localStorage.getItem("tiru_auth_key")}) //auth_key resides in localstorage upon login
     }
 
     render() { // remember that you can send who state from here to any child item rather than sending one or two e.g. this.state will send down channel_id, username and auth_key
@@ -33,22 +53,24 @@ class Belay extends React.Component {
       <div>
         <div className="titlebar">
           <TitleBar />
-                <SignupAndLogin currentUser={this.handleCallbackCurrentUser}/> 
+          {this.state.currentUser && <h2> Welcome back {this.state.currentUser} </h2>}
+          {!this.state.currentUser &&
+            <SignupAndLogin currentUser={this.handleCallbackCurrentUser} />}
         </div>
-            <div className="main">
-                <div className="sidebar">
-                    <Channels currentChannelID={this.handleCallbackChannelID} />
-                    <CreateNewChannel/>
-                </div>
-                <div className="messages"> 
-            <Posts currentChannelID={this.state.currentChannelID} messageID={this.handleCallbackmessageID}/> 
-                    <Compose currentChannelID={this.state.currentChannelID}/>
+        {this.state.currentUser && <div className="main">
+          <div className="sidebar">
+            <Channels currentChannelID={this.handleCallbackChannelID} />
+            <CreateNewChannel />
+          </div>
+          <div className="messages">
+            <Posts currentChannelID={this.state.currentChannelID} messageID={this.handleCallbackmessageID} />
+            <Compose currentChannelID={this.state.currentChannelID} />
           </div>
           <div className="replies">
             <Replies messageID={this.state.messageID} currentChannelID={this.state.currentChannelID} />
-            <CreateReply messageID={this.state.messageID} currentChannelID={this.state.currentChannelID}/>
+            <CreateReply messageID={this.state.messageID} currentChannelID={this.state.currentChannelID} />
           </div>
-            </div>
+        </div>}
       </div>
     );
   }

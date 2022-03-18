@@ -6,6 +6,22 @@ class Channels extends React.Component {
       channelsList: []
     }
   }
+
+  // componentDidMount() {
+  //   setInterval(() => {
+  //     const tiru_auth_key = window.localStorage.getItem("tiru_auth_key");
+  //     fetch("http://127.0.0.1:5000/api/getChannels", {
+  //       method: 'GET',
+  //       headers: { 'Content-Type': 'application/json', 'tiru_auth_key': tiru_auth_key }
+  //     })
+  //       .then((response) => response.json())
+  //       .then((data) => {
+  //         this.setState({ channelsList: data.channels });
+  //         console.log("array is:", this.state.channelsList);
+  //       });
+  //   }, 5000);
+  // }
+  
     
   refresh(){
     const tiru_auth_key = window.localStorage.getItem("tiru_auth_key");
@@ -34,7 +50,7 @@ class Channels extends React.Component {
     }
 }
 
-//+ channel[2] +"unread"
+//<button onClick={() => this.refresh()}>Refresh</button>
 
 class CreateNewChannel extends React.Component {
   constructor(props) {
