@@ -1,19 +1,3 @@
-window.addEventListener("DOMContentLoaded", () =>
-  console.log("DOM content loaded even called"));
-window.addEventListener("load", () => console.log("load event called"));
-window.addEventListener("popstate", () => {
-  console.log("pop event called");
-  let url = window.location.pathname;
-  let urlSplit = url.split('/');
-  console.log("total split", urlSplit);
-  if (urlSplit.length > 3) {
-    //split[3] is channel id, and split[4] is message id
-    let next_channelID = urlSplit[3];
-    let next_messageID = urlSplit[4];
-    return <Belay next_channelID={next_channelID} next_messageID={next_messageID} />
-  }
-  
-});
 
 class Belay extends React.Component {
   constructor(props) {
@@ -27,8 +11,32 @@ class Belay extends React.Component {
       showChannelPosts: false
     }
   }
-    
+
   componentDidMount() {
+    //Case 1: Histroy popstate triggers a load
+    window.addEventListener("popstate", () => {
+      console.log("pop event called");
+      let url = window.location.pathname;
+      let urlSplit = url.split('/');
+      console.log("total split", urlSplit);
+      if (this.state.tiru_auth_key) {
+        if (urlSplit.length > 3) {
+          //split[3] is channel id, and split[4] is message id
+          let next_channelID = urlSplit[3];
+          let next_messageID = urlSplit[4];
+          return <Belay next_channelID={next_channelID} next_messageID={next_messageID} />;
+        } else if (urlSplit.length === 3) {
+          let next_channelID = urlSplit[3];
+          return <Belay next_channelID={next_channelID} next_messageID={next_messageID} />
+        } else {
+          return <Belay tiru_auth_key={tiru_auth_key} />
+        }
+      }
+      else {
+        <Belay />
+      }
+    });
+    // An organic call to root makes the page load (check authentication first)
     if (this.state.tiru_auth_key) {
       console.log("User already logged in")
       // get username and update state
@@ -45,8 +53,13 @@ class Belay extends React.Component {
     else {
       console.log("User not logged in")
     }
-  }
-   
+
+    //Case 3: someone pastes a link to an api endpoint. 
+      window.addEventListener('DOMContentLoaded', () => {
+      console.log("DOM content loaded even called");
+      //window.addEventListener("load", () => console.log("load event called"));
+  });
+}
 
     handleCallbackChannelID = (currentChannelReceived) => {
       this.setState({ currentChannelID: currentChannelReceived });

@@ -274,7 +274,7 @@ def checkAuthkey(auth_key):
     '''
     connection = sqlite3.connect(DB_NAME)
     cursor = connection.cursor()
-    query = "SELECT username FROM users WHERE auth_key=?"
+    query = "SELECT COUNT(*) FROM users WHERE auth_key=?"
     try:
         cursor.execute(query, (auth_key, ))
         rv = cursor.fetchone()
