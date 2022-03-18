@@ -37,8 +37,6 @@ class Posts extends React.Component {
     }
 
   render() {
-    const url = "http://127.0.0.1:5000/api/channel/" + this.props.currentChannelID;
-    history.pushState(null, null, url);
     const posts = this.state.posts.map((post) =>
       <div key={post[0]} id={"post_" + post[0]}>
             <div id="postbody" key={"msg_+" + post[0]}>{post[2]}</div>
@@ -126,14 +124,8 @@ class Replies extends React.Component {
             this.setState({ replies: data.replies });
     });
     }
-  
-  goBack() {
-    console.log("design go back")
-  }
 
   render() {
-    const url = "http://127.0.0.1:5000/api/channel/" + this.props.currentChannelID + "/" + this.props.messageID;
-    history.pushState(null, null, url);  
     const replies = this.state.replies.map((reply) =>
       <div key={reply[0]} id={"reply_" + reply[0]}>
             <div key={"rep_+" + reply[0]}>{reply[2]}</div>
@@ -145,7 +137,6 @@ class Replies extends React.Component {
       <div className="replies" id="replies">
         <h2>Replies</h2>
         <button onClick={() => this.props.goBack(true)}>Go Back</button> 
-        <button onClick={() => this.refresh()}>Refresh</button> 
         {replies}
       </div>
     );

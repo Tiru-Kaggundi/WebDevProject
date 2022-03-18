@@ -1,9 +1,19 @@
 window.addEventListener("DOMContentLoaded", () =>
   console.log("DOM content loaded even called"));
 window.addEventListener("load", () => console.log("load event called"));
-window.addEventListener("popstate", () =>
-  console.log("pop event called")
-);
+window.addEventListener("popstate", () => {
+  console.log("pop event called");
+  let url = window.location.pathname;
+  let urlSplit = url.split('/');
+  console.log("total split", urlSplit);
+  if (urlSplit.length > 3) {
+    //split[3] is channel id, and split[4] is message id
+    let next_channelID = urlSplit[3];
+    let next_messageID = urlSplit[4];
+    return <Belay next_channelID={next_channelID} next_messageID={next_messageID} />
+  }
+  
+});
 
 class Belay extends React.Component {
   constructor(props) {
@@ -37,14 +47,19 @@ class Belay extends React.Component {
     }
   }
    
+
     handleCallbackChannelID = (currentChannelReceived) => {
       this.setState({ currentChannelID: currentChannelReceived });
+      const url = "http://127.0.0.1:5000/api/channel/" + this.state.currentChannelID;
+      history.pushState(null, null,  url);
       this.setState({ showChannelPosts: true });
     }
   
     handleCallbackmessageID = (messageIDReceived) => {
       this.setState({ messageID: messageIDReceived });
       this.setState({ goBack: false });
+      const url = "http://127.0.0.1:5000/api/channel/" + this.state.currentChannelID + "/" + this.state.messageID;
+      history.pushState(null, null, url);  
     }
 
     handleCallbackCurrentUser = (currentUser) => {
@@ -54,6 +69,14 @@ class Belay extends React.Component {
     handleCallbackgoBack = (goBackstatus) => {
         this.setState({ goBack: goBackstatus })
     }
+  
+  shouldComponentUpdate(next_channelID, next_messageID) {
+    if ((next_channelID !== this.state.currentChannelID) || (next_messageID !== this.state.messageID))  {
+      return true;
+    } else {
+      return false;
+    }
+  }
   
 
     render() { // remember that you can send who state from here to any child item rather than sending one or two e.g. this.state will send down channel_id, username and auth_key
