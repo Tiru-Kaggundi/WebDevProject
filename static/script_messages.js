@@ -48,7 +48,6 @@ class Posts extends React.Component {
   }
 }
 
-
 //compose your message module
 //auth_key goes in header which the server uses to figure out who is the user
 class Compose extends React.Component {
@@ -128,10 +127,6 @@ class Replies extends React.Component {
             <div key={"author_+" + reply[1]}>{reply[1]}</div>
         </div>
     );
-      console.log("State: ", this.state)
-      console.log('props: ', this.props)
-      console.log("Got this channel id (from react component): ", this.state.currentChannelID);
-      console.log("Got this message id (from react component): ", this.state.messageID);
 
     return ( 
       <div className="replies" id="replies">

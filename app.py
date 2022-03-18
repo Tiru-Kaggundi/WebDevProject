@@ -380,7 +380,7 @@ def get_unread_info(username):
     connection = sqlite3.connect(DB_NAME)
     cursor = connection.cursor()
     query1 = "SELECT COUNT(*) FROM channels"
-    query2 = "SELECT COALESCE(last_read_message_id, 0) FROM last_read WHERE channel_id = ? AND username = ? "
+    query2 = "SELECT COALESCE(last_read_message_id, 0) as coal FROM last_read WHERE channel_id = ? AND username = ? ORDER BY coal DESC"
     query3 = "SELECT COUNT(*) FROM messages WHERE channel_id = ? AND id > ?"
     try:
         cursor.execute(query1)

@@ -7,6 +7,11 @@ class SignupAndLogin extends React.Component {
       username: ''
     };
   }
+
+  componentWillUnmount() {
+    console.warn("Login component is unmounting")
+  }
+
   signup = () => {
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;

@@ -13,7 +13,7 @@ class Belay extends React.Component {
       currentUser: '',
       tiru_auth_key: window.localStorage.getItem("tiru_auth_key"),
       messageID: '',
-      goBack:false
+      goBack:true
     }
   }
     
@@ -35,13 +35,7 @@ class Belay extends React.Component {
       console.log("User not logged in")
     }
   }
-
-      // document.querySelector(".signup").style.display = "block";
-      // document.querySelector(".sidebar").style.display = "none";
-      // document.querySelector(".messages").style.display = "none";
-      // document.querySelector(".replies").style.display = "none";
-  
-    
+   
     handleCallbackChannelID = (currentChannelReceived) => {
         this.setState({ currentChannelID: currentChannelReceived })
     }
@@ -66,7 +60,7 @@ class Belay extends React.Component {
       <div>
         <div className="titlebar">
           <TitleBar />
-          {this.state.currentUser && <h2> Welcome back {this.state.currentUser} </h2>}
+          {this.state.currentUser && <h2> Welcome {this.state.currentUser} </h2>}
           {!this.state.currentUser &&
             <SignupAndLogin currentUser={this.handleCallbackCurrentUser} />}
         </div>
