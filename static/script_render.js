@@ -38,7 +38,10 @@ class Belay extends React.Component {
                 <div className="messages"> 
                     <Posts currentChannelID={this.state.currentChannelID} /> 
                     <Compose currentChannelID={this.state.currentChannelID}/>
-                </div>  
+          </div>
+          <div className="replies">
+            <Replies messageID='1' />
+          </div>
             </div>
       </div>
     );

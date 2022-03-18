@@ -1,11 +1,11 @@
-INSERT INTO channels (slug, title)
-VALUES('slug1', 'First Chat');
+INSERT INTO channels (title)
+VALUES('First Channel');
 
-INSERT INTO channels (slug, title)
-VALUES('slug2', 'second Chat');
+INSERT INTO channels (title)
+VALUES('second Channel');
 
-INSERT INTO channels (slug, title)
-VALUES('slug3', 'third Chat');
+INSERT INTO channels (title)
+VALUES('third Channel');
 
 INSERT INTO users (username, password, auth_key)
 VALUES('tiru1', 'pwd1', 'afdafasdfasdfas');

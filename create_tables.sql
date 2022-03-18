@@ -12,7 +12,6 @@ DROP TABLE IF EXISTS my_last_read;
 
 create table channels (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  slug VARCHAR(30),
   title VARCHAR(255) NOT NULL UNIQUE
 );
 

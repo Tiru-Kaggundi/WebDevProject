@@ -122,14 +122,13 @@ def getChannels():
 def createChannel():
     app.logger.info("came to create a newChannel")
     tiru_auth_key = request.headers.get('tiru_auth_key')
-    slug = ''
     title = request.headers.get('channelName')
     connection = sqlite3.connect(DB_NAME)
     cursor = connection.cursor()
-    query = "INSERT into channels (slug, title) VALUES (?, ?)"
+    query = "INSERT into channels (title) VALUES (?)"
     try:
         print("came into try: new channel")
-        cursor.execute(query, (slug, title,))
+        cursor.execute(query, (title,))
         connection.commit()
         rv = get_channelID_channelName(title)
         return {'currentChannelID': rv}
@@ -193,6 +192,58 @@ def getMessages(channelID):
             finally:
                 cursor.close()
                 connection.close()
+
+
+# Get and post replies 
+
+@app.route('/api/channel/<int:channelID>/<int:messageID>', methods=['GET', 'POST'])
+def getReplies(messageID):
+    if request.method == 'GET': 
+        app.logger.info("got in to get replies for messageID", messageID)
+        tiru_auth_key = request.headers.get('tiru_auth_key')
+        message_id = int(channelID)
+        connection = sqlite3.connect(DB_NAME)
+        cursor = connection.cursor()
+        query = "SELECT id, author, body FROM replies WHERE message_id=? ORDER BY id"
+        if checkAuthkey(tiru_auth_key): 
+            try:
+                cursor.execute(query, (message_id, ))
+                rv = [item for item in cursor.fetchall()]
+                app.logger.info(rv)
+                return jsonify({'replies':rv})
+            except Exception as e:
+                print(e)
+                return {}, 404
+            finally:
+                cursor.close()
+                connection.close()
+
+    if request.method == 'POST':
+        app.logger.info("got in to post reply")
+        tiru_auth_key = request.headers.get('tiru_auth_key')
+        author = get_author_from_auth_key(tiru_auth_key)
+        message_id = int(messageID)
+        jsonRec = request.get_json()
+        app.logger.info("Json rec: ", jsonRec)
+        body = jsonRec['body']
+        app.logger.info("Body received: ", body)
+        connection = sqlite3.connect(DB_NAME)
+        cursor = connection.cursor()
+        query = "INSERT INTO replies (body, author, message_id) VALUES(?, ?, ?)"
+        if checkAuthkey(tiru_auth_key):
+            try:
+                cursor.execute(query, (body, author, message_id, ))
+                connection.commit()
+                print("about to return try")
+                return {}
+            except Exception as e:
+                print("entered exception")
+                print(e)
+                return {"Exection encountered": e}, 302
+            finally:
+                cursor.close()
+                connection.close()
+
 
 
 def checkAuthkey(auth_key):
