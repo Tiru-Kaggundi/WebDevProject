@@ -1,6 +1,18 @@
 # Final Project: Belay (a Slack clone)
 
-30 points
+README:
+
+It's a 3 column design - extremely unfriendly UI as of now. Does all basic stuff, of authentication, posting channels, messages, replies etc. Counts unread and displays. 
+Once the DB is created (which I named as belayDB)
+you can run the script to create tables at 20220315T224504_create_tables.sql
+Thereafter, it just simple flask run (after setting FLASK APP to app) 
+It looks horrible, but it does basic things. 
+
+What it doesn't do yet (out of the requirements)
+- pushes history, tries to read the pop history, but fails to load.
+- the image integration to parse out the image links from messages is not yet done
+- Horrible media friendliness. It was kept for the end, and the end never came! 
+
 
 **DUE: Friday, March 18 by 5:30pm**
 (Due Thursday March 10, with more generous grading, for graduating students)
