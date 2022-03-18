@@ -40,9 +40,10 @@ class Posts extends React.Component {
       <div key={post[0]} id={"post_" + post[0]}>
             <div key={"msg_+" + post[0]}>{post[2]}</div>
         <div key={"author_+" + post[1]}>{post[1]}</div>
-        <button key={"replies_to_" + post[0]} onClick={() => this.showReplies(post[0])}>Replies</button>
+        <button key={"replies_to_" + post[0]} onClick={() => this.props.messageID(post[0])}>Replies</button> 
         </div>
     );
+      //the button click on reply sends the messageID to parent which calls the Post function
       console.log("State: ", this.state)
       console.log('props: ', this.props)
     console.log("Got this channel id (from react component): ", this.state.currentChannelID);
@@ -111,7 +112,8 @@ class Replies extends React.Component {
     // convert this refresh in set internval using 5.state and lifecycle react tutorial
     refresh() {
       const session_token = window.localStorage.getItem("tiru_auth_key");
-      const url = "http://127.0.0.1:5000/api/channel/" + this.props.currentChannelID +"/"+ this.state.messageID
+      const url = "http://127.0.0.1:5000/api/channel/" + this.props.currentChannelID + "/" + this.props.messageID;
+      console.log("URL for replies:", url);
       fetch(url, {
           method: 'GET',
           headers: {
@@ -146,4 +148,40 @@ class Replies extends React.Component {
       </div>
     );
   }
+}
+
+
+
+class CreateReply extends React.Component {
+  constructor(props) {
+    super(props);
+      this.state = {
+          messageID: '',
+      } 
+  }
+    createReply() {
+      const body = document.getElementById("replyBody").value;
+      const session_token = window.localStorage.getItem("tiru_auth_key");
+      const url = "http://127.0.0.1:5000/api/channel/" + this.props.currentChannelID + "/" + this.props.messageID;
+      fetch(url, {
+          method: 'POST',
+          headers: {'tiru_auth_key':session_token, 'Content-Type': 'application/json'}, 
+          body: JSON.stringify({body: body})
+      })
+    .then((response) => response.json())
+          .then((data) => {
+              console.log("reply posted for author: ", data.author);
+              document.getElementById("replyBody").value = "";
+    });
+    }
+    render() {
+        return (
+        <div className="newReply" id="newReply">
+            <textarea id="replyBody"></textarea>
+            <button className="form_button" onClick={() => this.createReply()}>
+                Reply
+            </button>
+            </div>
+    );
+  } 
 }

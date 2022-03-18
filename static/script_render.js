@@ -6,6 +6,7 @@ class Belay extends React.Component {
       currentChannelID: '',
       currentUser: '',
       tiru_auth_key: '',
+      messageID: ''
     }
   }
     
@@ -15,6 +16,10 @@ class Belay extends React.Component {
     
     handleCallbackChannelID = (currentChannelReceived) => {
         this.setState({ currentChannelID: currentChannelReceived })
+    }
+  
+    handleCallbackmessageID = (messageIDReceived) => {
+        this.setState({ messageID: messageIDReceived })
     }
 
     handleCallbackCurrentUser = (currentUser) => {
@@ -36,11 +41,12 @@ class Belay extends React.Component {
                     <CreateNewChannel/>
                 </div>
                 <div className="messages"> 
-                    <Posts currentChannelID={this.state.currentChannelID} /> 
+            <Posts currentChannelID={this.state.currentChannelID} messageID={this.handleCallbackmessageID}/> 
                     <Compose currentChannelID={this.state.currentChannelID}/>
           </div>
           <div className="replies">
-            <Replies messageID='1' currentChannelID='1'/>
+            <Replies messageID={this.state.messageID} currentChannelID={this.state.currentChannelID} />
+            <CreateReply messageID={this.state.messageID} currentChannelID={this.state.currentChannelID}/>
           </div>
             </div>
       </div>

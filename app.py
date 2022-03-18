@@ -235,7 +235,7 @@ def getReplies(channelID, messageID):
                 cursor.execute(query, (body, author, message_id, ))
                 connection.commit()
                 print("about to return try")
-                return {}
+                return jsonify({'author':author})
             except Exception as e:
                 print("entered exception")
                 print(e)
