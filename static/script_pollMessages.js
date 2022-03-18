@@ -40,7 +40,7 @@ class Posts extends React.Component {
       <div key={post[0]} id={"post_" + post[0]}>
             <div key={"msg_+" + post[0]}>{post[2]}</div>
         <div key={"author_+" + post[1]}>{post[1]}</div>
-        <button key={"replies_to_" + post[0]} onClick={() => this.props.messageID(post[0])}>Replies</button> 
+        <button key={"replies_to_" + post[0]} onClick={() => this.props.messageID(post[0])}>Replies: {post[3]}</button> 
         </div>
     );
       //the button click on reply sends the messageID to parent which calls the Post function

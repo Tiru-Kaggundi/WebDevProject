@@ -99,15 +99,19 @@ def login():
 def getChannels():
     app.logger.info("got into get Channels")
     tiru_auth_key = request.headers.get('tiru_auth_key')
+    username = get_author_from_auth_key(tiru_auth_key) 
     connection = sqlite3.connect(DB_NAME)
     cursor = connection.cursor()
     query = "SELECT id, title FROM Channels ORDER BY id"
     if checkAuthkey(tiru_auth_key): 
         try:
             cursor.execute(query)
-            rv = [item for item in cursor.fetchall()]
-            app.logger.info(rv)
-            return jsonify({'channels':rv})
+            rv1 = [item for item in cursor.fetchall()]
+            app.logger.info(rv1)
+            # get unread list
+            rv2 = get_unread_info(username)
+            app.logger.info(rv2)
+            return jsonify({'channels':rv1, 'lastReadList':rv2})
         except Exception as e:
             print(e)
             return {}, 404
@@ -150,6 +154,7 @@ def getMessages(channelID):
     if request.method == 'GET': 
         app.logger.info("got in to get messages")
         tiru_auth_key = request.headers.get('tiru_auth_key')
+        username = get_author_from_auth_key(tiru_auth_key)
         channel_id = int(channelID)
         connection = sqlite3.connect(DB_NAME)
         cursor = connection.cursor()
@@ -158,8 +163,14 @@ def getMessages(channelID):
             try:
                 cursor.execute(query, (channel_id, ))
                 rv = [item for item in cursor.fetchall()]
+                # get number of replies
+                new_rv = list(map(lambda x: list(x) + [get_number_replies(x[0])], rv))
                 app.logger.info(rv)
-                return jsonify({'posts':rv})
+                app.logger.info(new_rv)
+                # insert last read message_id for this channel into last_read db table
+                add_last_read(username, channel_id)
+                # now return posts for rendering
+                return jsonify({'posts':new_rv})
             except Exception as e:
                 print(e)
                 return {}, 404
@@ -173,7 +184,6 @@ def getMessages(channelID):
         author = get_author_from_auth_key(tiru_auth_key)
         channel_id = int(channelID)
         jsonRec = request.get_json()
-        app.logger.info("Json rec: ", jsonRec)
         body = jsonRec['body']
         app.logger.info("Body received: ", body)
         connection = sqlite3.connect(DB_NAME)
@@ -245,7 +255,6 @@ def getReplies(channelID, messageID):
                 connection.close()
 
 
-
 def checkAuthkey(auth_key):
     '''
     checks if the auth key exists for some user in database
@@ -302,6 +311,98 @@ def get_channelID_channelName(title):
         cursor.close()
         connection.close()
     return channelID
+
+def get_number_replies(message_id):
+    '''
+    given a message_id, gets the number of replies to that message id
+    '''
+    connection = sqlite3.connect(DB_NAME)
+    cursor = connection.cursor()
+    query = "SELECT COUNT(*) from replies WHERE message_id=?"
+    try:
+        cursor.execute(query, (message_id, ))
+        n_replies = cursor.fetchone()[0]
+        app.logger.info("n_replies", n_replies)
+    except Exception as e:
+        print(e)
+        return {}, 404
+    finally:
+        cursor.close()
+        connection.close()
+    return n_replies
+
+def add_last_read(username, channel_id):
+    '''
+    add last_read_message_id for given username and channel id into last_read table
+    '''
+    connection = sqlite3.connect(DB_NAME)
+    cursor = connection.cursor()
+    query1 = "SELECT id FROM messages WHERE channel_id=? ORDER BY id DESC"
+    query2 = "INSERT INTO last_read (username, channel_id, last_read_message_id) VALUES (?,?,?)"
+    try:
+        cursor.execute(query1, (channel_id, ))
+        rv = cursor.fetchone()
+        if rv:
+            last_read_message_id = rv[0]
+            cursor.execute(query2, (username, channel_id, last_read_message_id,))
+            connection.commit()
+    except Exception as e:
+        print(e)
+        return {}, 404
+    finally:
+        cursor.close()
+        connection.close()
+        if rv:
+            return last_read_message_id
+        return False
+
+
+def get_unread_info(username):
+    '''
+    gets unread items count for each channel_id for given username
+    '''
+    connection = sqlite3.connect(DB_NAME)
+    cursor = connection.cursor()
+    query = '''
+    with
+        all_channels as
+            (select id from channels),
+        my_last_read as (
+            select
+            all_channels.id as channel_id,
+            coalesce(last_read.last_read_message_id, 0) as last_read_id
+            from all_channels
+            left join last_read
+            on all_channels.id = last_read.channel_id
+            where last_read.username = ? )
+        select
+        my_last_read.channel_id,
+        count(*)
+        from
+        my_last_read
+        left join
+        messages
+        on my_last_read.channel_id = messages.channel_id
+        where messages.id > my_last_read.last_read_id
+        group by channel_id;'''
+    try:
+        cursor.execute(query, (username, ))
+        last_read_info = cursor.fetchall()
+        app.logger.info("last_read_info", last_read_info)
+    except Exception as e:
+        print(e)
+        return {}, 404
+    finally:
+        cursor.close()
+        connection.close()
+    return last_read_info
+
+
+
+
+
+
+
 
 
 # TODO: Include any other routes your app might send users to

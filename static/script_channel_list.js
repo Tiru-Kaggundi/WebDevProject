@@ -4,6 +4,7 @@ class Channels extends React.Component {
     super(props);
     this.state = {
       channelsList: [],
+      lastReadList: []
     }
   }
     
@@ -16,7 +17,9 @@ class Channels extends React.Component {
     .then((response) => response.json())
     .then((data) => {
         this.setState({ channelsList: data.channels });
-        console.log("array is:", this.state.channelsList);
+      console.log("array is:", this.state.channelsList);
+      this.setState({ lastReadList: data.lastReadList });
+      console.log("last read list is:", this.state.lastReadList)
     });
   }
     

@@ -39,13 +39,13 @@ create table users (
   auth_key VARCHAR(40)
 );
 
-create table my_last_read(
-  user_id INTEGER PRIMARY KEY,
+create table last_read(
+  username VARCHAR(40),
   channel_id INTEGER,
-  message_id INTEGER, 
-  FOREIGN KEY(user_id) REFERENCES users(id)
+  last_read_message_id INTEGER, 
+  FOREIGN KEY(username) REFERENCES users(username)
   FOREIGN KEY(channel_id) REFERENCES channels(id), 
-  FOREIGN KEY(message_id) REFERENCES messages(id)
+  FOREIGN KEY(last_read_message_id) REFERENCES messages(id)
 );
 
 PRAGMA foreign_keys = ON;
