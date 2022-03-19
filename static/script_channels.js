@@ -37,7 +37,6 @@ class Channels extends React.Component {
         <div className="channelsList" id="channels">
             <h3>Channels</h3>
         <ul>{channels}</ul>
-        <button onClick={() => this.refresh()}>Refresh</button>
         </div>
     );
     }

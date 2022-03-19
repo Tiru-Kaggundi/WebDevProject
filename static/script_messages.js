@@ -129,7 +129,7 @@ class Replies extends React.Component {
     const replies = this.state.replies.map((reply) =>
       <div key={reply[0]} id={"reply_" + reply[0]}>
             <div key={"rep_+" + reply[0]}>{reply[2]}</div>
-            <div key={"author_+" + reply[1]}>{reply[1]}</div>
+            <div key={"author_+" + reply[1]}>{"-" + reply[1]}</div>
         </div>
     );
 
